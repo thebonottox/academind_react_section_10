@@ -2,6 +2,7 @@ import { createContext } from "react";
 
 export const CartContext = createContext({
   items: [], // This will later store the shopping cart items
+  addItemToCart: () => {},
 });
 
 // Here we create our first context
