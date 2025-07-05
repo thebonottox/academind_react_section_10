@@ -69,9 +69,11 @@ function App() {
 
   // Bellow, by wrapping our CartContext around those other components,
   // we are providing the context to them so they can consume it.
+  // The value property below is required and works sort of like a default value if a component that is not wrapped by our context tries to access it.
+  // We are consuming this context inside Cart.jsx
 
   return (
-    <CartContext>
+    <CartContext value={{ items: [] }}>
       <Header
         cart={shoppingCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}

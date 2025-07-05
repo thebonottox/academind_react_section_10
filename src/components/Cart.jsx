@@ -1,16 +1,25 @@
-export default function Cart({ items, onUpdateItemQuantity }) {
-  const totalPrice = items.reduce(
+// We need this hook to consume the context
+import { useContext } from "react";
+import { CartContext } from "../store/shopping-cart-context";
+
+export default function Cart({ onUpdateItemQuantity }) {
+  // Here we store the values from the context into a variable
+  const cartCtx = useContext(CartContext);
+
+  // We then use the cartCtx variable containing the context in the logic below.
+  const totalPrice = cartCtx.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
   const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
 
+  // We then use the cartCtx variable containing the context in the logic below.
   return (
     <div id="cart">
-      {items.length === 0 && <p>No items in cart!</p>}
-      {items.length > 0 && (
+      {cartCtx.items.length === 0 && <p>No items in cart!</p>}
+      {cartCtx.items.length > 0 && (
         <ul id="cart-items">
-          {items.map((item) => {
+          {cartCtx.items.map((item) => {
             const formattedPrice = `$${item.price.toFixed(2)}`;
 
             return (
