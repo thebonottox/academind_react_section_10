@@ -1,86 +1,16 @@
-import { useState } from "react";
-
 import Header from "./components/Header.jsx";
 import Shop from "./components/Shop.jsx";
 import Product from "./components/Product.jsx";
 import { DUMMY_PRODUCTS } from "./dummy-products.js";
-import { CartContext } from "./store/shopping-cart-context.jsx";
+
+// Since we moved the logic related to the CartContext into the context file
+// We now have to import the function containing that logic  which is being exported in that file.
+import CartContextProvider from "./store/shopping-cart-context.jsx";
+// As you can see below, that function name will now be our component name
 
 function App() {
-  const [shoppingCart, setShoppingCart] = useState({
-    items: [],
-  });
-
-  function handleAddItemToCart(id) {
-    setShoppingCart((prevShoppingCart) => {
-      const updatedItems = [...prevShoppingCart.items];
-
-      const existingCartItemIndex = updatedItems.findIndex(
-        (cartItem) => cartItem.id === id
-      );
-      const existingCartItem = updatedItems[existingCartItemIndex];
-
-      if (existingCartItem) {
-        const updatedItem = {
-          ...existingCartItem,
-          quantity: existingCartItem.quantity + 1,
-        };
-        updatedItems[existingCartItemIndex] = updatedItem;
-      } else {
-        const product = DUMMY_PRODUCTS.find((product) => product.id === id);
-        updatedItems.push({
-          id: id,
-          name: product.title,
-          price: product.price,
-          quantity: 1,
-        });
-      }
-
-      return {
-        items: updatedItems,
-      };
-    });
-  }
-
-  function handleUpdateCartItemQuantity(productId, amount) {
-    setShoppingCart((prevShoppingCart) => {
-      const updatedItems = [...prevShoppingCart.items];
-      const updatedItemIndex = updatedItems.findIndex(
-        (item) => item.id === productId
-      );
-
-      const updatedItem = {
-        ...updatedItems[updatedItemIndex],
-      };
-
-      updatedItem.quantity += amount;
-
-      if (updatedItem.quantity <= 0) {
-        updatedItems.splice(updatedItemIndex, 1);
-      } else {
-        updatedItems[updatedItemIndex] = updatedItem;
-      }
-
-      return {
-        items: updatedItems,
-      };
-    });
-  }
-
-  // Bellow, by wrapping our CartContext around those other components,
-  // we are providing the context to them so they can consume it.
-  // The value property below is required and seems to pass data to the context so it can then feed to other components.
-
-  // We are consuming this context inside Cart.jsx and Product.jsx
-
-  const ctxValue = {
-    items: shoppingCart.items,
-    addItemToCart: handleAddItemToCart,
-    updateItemQuantity: handleUpdateCartItemQuantity,
-  };
-
   return (
-    <CartContext value={ctxValue}>
+    <CartContextProvider>
       <Header />
       <Shop>
         {DUMMY_PRODUCTS.map((product) => (
@@ -89,7 +19,7 @@ function App() {
           </li>
         ))}
       </Shop>
-    </CartContext>
+    </CartContextProvider>
   );
 }
 
